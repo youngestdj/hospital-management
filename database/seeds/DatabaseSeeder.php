@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Models\Admin;
+use App\Models\Admin;
 use App\Mail\AdminAdded;
 use Crisu83\ShortId\ShortId;
 use Illuminate\Database\Seeder;

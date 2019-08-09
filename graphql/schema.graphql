@@ -1,0 +1,22 @@
+type Admin {
+  id: Int!
+  firstname: String!
+  lastname: String!
+  email: String!
+}
+
+type Doctor {
+  id: Int!
+  firstname: String!
+  lastname: String!
+  email: String!
+  phone: String!
+  gender: String!
+  dob: String!
+  specialization: String!
+}
+
+type Query {
+  admin(id: Int! @eq): Admin @find
+  admins: [Admin!]! @all
+}

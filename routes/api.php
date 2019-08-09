@@ -18,5 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::prefix('v1')->group(function () {
   Route::post('/admin/add', 'UserController@addAdmin');
-  Route::post('/{user}/verify/{key}', 'UserController@verifyUser');
+  Route::post('/{user}/verify/{key}', 'UserController@verifyUser')
+  ->where(['user' => '\b(admin|patient|doctor)\b']);
 });
