@@ -6,17 +6,17 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-  /** @var \Illuminate\Http\Request $request */
-  private $request;
-  private $model;
+    /** @var \Illuminate\Http\Request $request */
+    private $request;
+    private $model;
   
-  function __construct(Request $request)
-  {
-    $this->request = $request;
-    $this->model = 'App\Http\Models\\' . $request->user;
-  }
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+        $this->model = 'App\Http\Models\\' . $request->user;
+    }
 
-  // /**
+    // /**
   //  * Create a new admin
   //  * @param AddAdminRequest $request
   //  * @return \Illuminate\Http\JsonResponse
@@ -46,7 +46,7 @@ class UserController extends Controller
 
 //   /**
 //    * Verify a user
-//    * 
+//    *
 //    * @return \Illuminate\Http\JsonResponse
 //    */
 //   public function verifyUser()

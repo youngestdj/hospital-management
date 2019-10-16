@@ -4,6 +4,7 @@ namespace App\GraphQL\Mutations;
 
 use Illuminate\Support\Arr;
 use App\Models\Root;
+
 class VerifyRoot
 {
     /**

@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Root;
 use Crisu83\ShortId\ShortId;
+use GraphQL\Error\Debug;
 
 class AccountVerificationTest extends TestCase
 {
@@ -14,14 +15,15 @@ class AccountVerificationTest extends TestCase
 
     protected $rootEmail;
 
-    public function setUp(): void {
-      parent::setUp();
-      $root = new Root();
-      $this->rootEmail = $root->email = \config('mail.root');
-      $shortid = ShortId::create();
-      $root->verification_key = $shortid->generate() . $shortid->generate();
-      $savedRoot = $root->save();
-      $this->assertTrue($savedRoot);
+    public function setUp(): void
+    {
+        parent::setUp();
+        $root = new Root();
+        $this->rootEmail = $root->email = \config('mail.root');
+        $shortid = ShortId::create();
+        $root->verification_key = $shortid->generate() . $shortid->generate();
+        $savedRoot = $root->save();
+        $this->assertTrue($savedRoot);
     }
 
     public function testRootExists()
