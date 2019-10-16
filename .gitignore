@@ -20,3 +20,5 @@ Homestead.json
 .rocketeer/
 .phpunit.result.cache
 yarn-error.log
+analysis.txt
+.env.testing

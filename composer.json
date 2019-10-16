@@ -13,8 +13,9 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
-        "nuwave/lighthouse": "3.1.*",
-        "paragonie/random_compat": "2.*"
+        "paragonie/random_compat": "2.*",
+        "phan/phan": "^2.2",
+        "stechstudio/laravel-php-cs-fixer": "^2.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -32,6 +33,15 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "hooks": {
+            "pre-commit": [
+                "php artisan fixer:fix --show-progress=estimating",
+                "vendor/bin/phan --progress-bar -o analysis.txt"
+            ],
+            "pre-push": [
+                "php artisan fixer:fix --show-progress=estimating"
+            ]
         }
     },
     "autoload": {
@@ -60,6 +70,7 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ]
+        ],
+        "test": "./vendor/bin/phpunit --debug --testdox"
     }
 }

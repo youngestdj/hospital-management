@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Utils\Helpers;
 
 class AddAdminRequest extends FormRequest
 {
@@ -51,14 +50,15 @@ class AddAdminRequest extends FormRequest
   /**
    * Return validation errors in json format
    * 
-   * @return object
+   * @return void
+   * @phan-file-suppress PhanTypeMismatchArgument
    */
   public function failedValidation(Validator $validator)
   {
     $errors = (new ValidationException($validator))->errors();
     throw new HttpResponseException(response()->json([
       'success' => false,
-      'errors' => Helpers::transformValidationErrors($errors)
+      'errors' => $errors
     ], 422));
   }
 }
