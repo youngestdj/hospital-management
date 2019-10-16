@@ -1,0 +1,12 @@
+Unit\Example
+ [x] Basic test
+
+AccountVerification
+ [x] Root exists
+ [x] Root verification
+ [x] Root verification wrong key
+ [x] Root verification invalid password
+
+Feature\Example
+ [x] Basic test
+
