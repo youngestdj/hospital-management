@@ -5,13 +5,11 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class AdminAdded extends Mailable
 {
     use Queueable, SerializesModels;
     public $userDetails;
-
 
     /**
      * Create a new message instance.
@@ -30,6 +28,6 @@ class AdminAdded extends Mailable
      */
     public function build()
     {
-        return $this->view('sendEmail');
+        return $this->view('userAdded');
     }
 }

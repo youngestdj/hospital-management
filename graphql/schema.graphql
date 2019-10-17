@@ -5,6 +5,11 @@ type Admin {
   email: String!
 }
 
+type Root {
+  id: Int!
+  email: String!
+}
+
 type Doctor {
   id: Int!
   firstname: String!
@@ -20,3 +25,11 @@ type Query {
   admin(id: Int! @eq): Admin @find
   admins: [Admin!]! @all
 }
+
+ type Mutation {
+   verifyRoot(
+     key: String! @rules(apply: ["required"])
+     password: String! @rules(apply: ["required", "min:6"]) @bcrypt
+   ): String @field(resolver: "VerifyRoot@resolve")
+ }
+ 

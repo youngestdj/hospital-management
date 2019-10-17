@@ -1,56 +1,49 @@
 <?php
 
-use GraphQL\Error\Debug;
-use GraphQL\Validator\Rules\DisableIntrospection;
-
 return [
 
     /*
     |--------------------------------------------------------------------------
-    | GraphQL endpoint
+    | Route Configuration
     |--------------------------------------------------------------------------
     |
-    | Set the endpoint to which the GraphQL server responds.
-    | The default route endpoint is "yourdomain.com/graphql".
-    |
-    */
-
-    'route_name' => 'graphql',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Enable GET requests
-    |--------------------------------------------------------------------------
-    |
-    | This setting controls if GET requests to the GraphQL endpoint are allowed.
-    |
-    */
-
-    'route_enable_get' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Route configuration
-    |--------------------------------------------------------------------------
-    |
-    | Additional configuration for the route group https://lumen.laravel.com/docs/routing#route-groups
-    |
-    | Beware that middleware defined here runs before the GraphQL execution phase.
-    | This means that errors will cause the whole query to abort and return a
-    | response that is not spec-compliant. It is preferable to use directives
-    | to add middleware to single fields in the schema.
-    | Read more https://lighthouse-php.com/docs/auth.html#apply-auth-middleware
+    | Controls the HTTP route that your GraphQL server responds to.
+    | You may set `route` => false, to disable the default route
+    | registration and take full control.
     |
     */
 
     'route' => [
-        'prefix' => '',
-        // 'middleware' => ['loghttp']
+        /*
+         * The URI the endpoint responds to, e.g. mydomain.com/graphql.
+         */
+        'uri' => 'graphql',
+
+        /*
+         * Lighthouse creates a named route for convenient URL generation and redirects.
+         */
+        'name' => 'graphql',
+
+        /*
+         *
+         * Beware that middleware defined here runs before the GraphQL execution phase,
+         * so you have to take extra care to return spec-compliant error responses.
+         * To apply middleware on a field level, use the @middleware directive.
+         */
+        'middleware' => [
+            \Nuwave\Lighthouse\Support\Http\Middleware\AcceptJson::class,
+        ],
+
+        /*
+         * The `prefix` and `domain` configuration options are optional.
+         */
+        //'prefix' => '',
+        //'domain' => '',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Schema declaration
+    | Schema Location
     |--------------------------------------------------------------------------
     |
     | This is a path that points to where your GraphQL schema is located
@@ -68,15 +61,16 @@ return [
     | Schema Cache
     |--------------------------------------------------------------------------
     |
-    | A large part of schema generation is parsing the schema into an AST.
-    | This operation is pretty expensive so it is recommended to enable
-    | caching in production mode, especially for large schemas.
+    | A large part of schema generation consists of parsing and AST manipulation.
+    | This operation is very expensive, so it is highly recommended to enable
+    | caching of the final schema to optimize performance of large schemas.
     |
     */
 
     'cache' => [
-        'enable' => env('LIGHTHOUSE_CACHE_ENABLE', false),
+        'enable' => env('LIGHTHOUSE_CACHE_ENABLE', env('APP_ENV') !== 'local'),
         'key' => env('LIGHTHOUSE_CACHE_KEY', 'lighthouse-schema'),
+        'ttl' => env('LIGHTHOUSE_CACHE_TTL', null),
     ],
 
     /*
@@ -84,8 +78,8 @@ return [
     | Namespaces
     |--------------------------------------------------------------------------
     |
-    | These are the default namespaces where Lighthouse looks for classes
-    | that extend functionality of the schema. You may pass either a string
+    | These are the default namespaces where Lighthouse looks for classes to
+    | extend functionality of the schema. You may pass in either a string
     | or an array, they are tried in order and the first match is used.
     |
     */
@@ -107,15 +101,14 @@ return [
     |--------------------------------------------------------------------------
     |
     | Control how Lighthouse handles security related query validation.
-    | This configures the options from http://webonyx.github.io/graphql-php/security/
-    | A setting of "0" means that the validation rule is disabled.
+    | Read more at http://webonyx.github.io/graphql-php/security/
     |
     */
 
     'security' => [
-        'max_query_complexity' => 0,
-        'max_query_depth' => 0,
-        'disable_introspection' => DisableIntrospection::DISABLED,
+        'max_query_complexity' => \GraphQL\Validator\Rules\QueryComplexity::DISABLED,
+        'max_query_depth' => \GraphQL\Validator\Rules\QueryDepth::DISABLED,
+        'disable_introspection' => \GraphQL\Validator\Rules\DisableIntrospection::DISABLED,
     ],
 
     /*
@@ -133,6 +126,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Pagination Amount Argument
+    |--------------------------------------------------------------------------
+    |
+    | Set the name to use for the generated argument on paginated fields
+    | that controls how many results are returned.
+    |
+    | DEPRECATED This setting will be removed in v5.
+    |
+    */
+
+    'pagination_amount_argument' => 'first',
+
+    /*
+    |--------------------------------------------------------------------------
     | Debug
     |--------------------------------------------------------------------------
     |
@@ -141,7 +148,7 @@ return [
     |
     */
 
-    'debug' => Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE,
+    'debug' => \GraphQL\Error\Debug::INCLUDE_DEBUG_MESSAGE | \GraphQL\Error\Debug::INCLUDE_TRACE,
 
     /*
     |--------------------------------------------------------------------------
@@ -157,17 +164,6 @@ return [
     'error_handlers' => [
         \Nuwave\Lighthouse\Execution\ExtensionErrorHandler::class,
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | GraphQL Controller
-    |--------------------------------------------------------------------------
-    |
-    | Specify which controller (and method) you want to handle GraphQL requests.
-    |
-    */
-
-    'controller' => \Nuwave\Lighthouse\Support\Http\Controllers\GraphQLController::class.'@query',
 
     /*
     |--------------------------------------------------------------------------
@@ -198,8 +194,8 @@ return [
     | Transactional Mutations
     |--------------------------------------------------------------------------
     |
-    | Sets default setting for transactional mutations.
-    | You may set this flag to have @create|@update mutations transactional or not.
+    | If set to true, mutations such as @create or @update will be
+    | wrapped in a transaction to ensure atomicity.
     |
     */
 

@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.1-node-browsers
+    working_directory: ~/repo
+    environment:
+      CC_TEST_REPORTER_ID: 0b796d9b3e48915eb202e4a986c133ba2ebf7719d3ee22cea35083b3b7d5bf4c
+
+    steps:
+      - checkout
+      - run: sudo apt update
+      - run: sudo docker-php-ext-install zip
+      - run: sudo pecl install ast
+      - run: echo "extension=ast.so" | sudo tee -a /usr/local/etc/php/php.ini > /dev/null
+
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
+
+      - run: composer install -n --prefer-dist
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "composer.json" }}
+          paths:
+            - ./vendor
+      - run:
+          name: Run analysis
+          command: vendor/bin/phan --progress-bar
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run: ./cc-test-reporter before-build
+      
+      - run:
+          name: Run tests
+          command: ./vendor/bin/phpunit
+
+      - run:
+          name: Report code coverage
+          command: ./cc-test-reporter after-build -t clover --exit-code $?
