@@ -23,4 +23,4 @@ yarn-error.log
 analysis.txt
 .env.testing
 build
-coverage/Users/andela/Documents/dev/PHP/hospital-management/cghooks.lock
+cghooks.lock
