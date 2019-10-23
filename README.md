@@ -11,12 +11,88 @@ Hospital management system
 Run `php artisan db:seed` to create a root user. A link will be sent to the root user's email specified in the `.env` file
 
 ### Static analysis
-* Run `pecl install ast` to install the ast extension
+* Run `pecl install ast` to install the ast extension. Windows (http://windows.php.net/downloads/pecl/releases/ast/) https://github.com/nikic/php-ast
+* Add `extension=ast.so` to php.ini on unix systems and `extension=php_ast.dll` to php.ini on windows systems
 * Run `vendor/bin/phan --progress-bar -o analysis.txt` to run static analysis
 
 ### Verify Root user
+#### Mutation
 ```
 mutation {
   verifyRoot(key: "verificationKey", password: "abcdef")
+}
+```
+`{key}` verificationKey sent to the email.
+`{password}` Password for root user. Must be six characters or more
+#### Response
+```
+{
+  "data": {
+    "verifyRoot": "Root User has been verified. You can now log in with your email and password."
+  }
+}
+```
+```
+{
+  "data": {
+    "verifyRoot": "Invalid verification key."
+  }
+}
+```
+
+### Login
+#### Mutation
+```
+mutation {
+  login(email: "email@example.com", password: "password", user: "Admin") {
+    id,
+    email,
+    token,
+    firstname,
+    lastname
+  }
+}
+```
+`{email}` User email
+`{password}` user password
+`{user}` `Admin`, `Patient`, `Doctor`
+
+#### Response
+```
+{
+  "data": {
+    "login": {
+      "id": 1,
+      "email": "email@example.com",
+      "token": "eyJ0eXAiOiJKV1QirgCJhbGciOiJIUzI1Nisgsfs",
+      "firstname": "Root",
+      "lastname": "User"
+    }
+  }
+}
+```
+```
+{
+  "errors": [
+    {
+      "message": "Invalid email or password.",
+      "extensions": {
+        "error": "Login failed.",
+        "category": "custom"
+      },
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ],
+      "path": [
+        "login"
+      ]
+    }
+  ],
+  "data": {
+    "login": null
+  }
 }
 ```

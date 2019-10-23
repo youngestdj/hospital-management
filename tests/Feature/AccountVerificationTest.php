@@ -6,7 +6,6 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Root;
 use Crisu83\ShortId\ShortId;
-use GraphQL\Error\Debug;
 
 class AccountVerificationTest extends TestCase
 {
