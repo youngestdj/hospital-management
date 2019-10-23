@@ -24,3 +24,4 @@ analysis.txt
 .env.testing
 build
 cghooks.lock
+coverage

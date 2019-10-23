@@ -1,35 +1,63 @@
-type Admin {
-  id: Int!
-  firstname: String!
-  lastname: String!
-  email: String!
+type Root {
+    id: Int!
+    email: String!
+    firstname: String!
+    lastname: String!
 }
 
-type Root {
-  id: Int!
-  email: String!
+type Admin {
+    id: Int!
+    firstname: String!
+    lastname: String!
+    email: String!
+}
+
+type User {
+    id: Int!
+    email: String!
+    firstname: String!
+    lastname: String!
+    token: String!
 }
 
 type Doctor {
-  id: Int!
-  firstname: String!
-  lastname: String!
-  email: String!
-  phone: String!
-  gender: String!
-  dob: String!
-  specialization: String!
+    id: Int!
+    firstname: String!
+    lastname: String!
+    email: String!
+    phone: String!
+    gender: String!
+    dob: String!
+    specialization: String!
+}
+
+type Patient {
+    id: Int!
+    firstname: String!
+    lastname: String!
+    email: String!
+    phone: String!
+    dob: String!
+    gender: String!
+    occupation: String!
+    address: String!
 }
 
 type Query {
-  admin(id: Int! @eq): Admin @find
-  admins: [Admin!]! @all
+    admin(id: Int! @eq): Admin @find
+    admins: [Admin!]! @all
 }
 
- type Mutation {
-   verifyRoot(
-     key: String! @rules(apply: ["required"])
-     password: String! @rules(apply: ["required", "min:6"]) @bcrypt
-   ): String @field(resolver: "VerifyRoot@resolve")
- }
- 
+type Mutation {
+    verifyRoot(
+        key: String! @rules(apply: ["required"])
+        password: String! @rules(apply: ["required", "min:6"]) @bcrypt
+    ): String @field(resolver: "VerifyRoot@resolve")
+
+    login(
+        email: String! @rules(apply: ["required", "email"])
+        password: String! @rules(apply: ["required"])
+        user: String!
+            @rules(apply: ["required", "in:Admin,Patient,Doctor"])
+    ): User @field(resolver: "AuthMutator@login")
+}

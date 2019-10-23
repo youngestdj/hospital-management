@@ -382,6 +382,7 @@ return [
         'vendor/crisu83/shortid/src',
         'vendor/fideloper/proxy/src',
         'vendor/filp/whoops/src/Whoops',
+        'vendor/firebase/php-jwt/src',
         'vendor/fzaninotto/faker/src/Faker',
         'vendor/laravel/framework/src/Illuminate',
         'vendor/laravel/tinker/src',

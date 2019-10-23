@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\UserController;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 
 /*
