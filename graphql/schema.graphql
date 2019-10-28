@@ -58,6 +58,6 @@ type Mutation {
         email: String! @rules(apply: ["required", "email"])
         password: String! @rules(apply: ["required"])
         user: String!
-            @rules(apply: ["required", "in:Admin,Patient,Doctor"])
+            @rules(apply: ["required", "in:Root,Admin,Patient,Doctor"])
     ): User @field(resolver: "AuthMutator@login")
 }

@@ -22,7 +22,7 @@ mutation {
   verifyRoot(key: "verificationKey", password: "abcdef")
 }
 ```
-`{key}` verificationKey sent to the email.
+`{key}` verificationKey sent to the email.  
 `{password}` Password for root user. Must be six characters or more
 #### Response
 ```
@@ -53,9 +53,9 @@ mutation {
   }
 }
 ```
-`{email}` User email
-`{password}` user password
-`{user}` `Admin`, `Patient`, `Doctor`
+`{email}` User email  
+`{password}` user password  
+`{user}` `Root` `Admin`, `Patient`, `Doctor`
 
 #### Response
 ```
