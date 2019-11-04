@@ -35,18 +35,18 @@ class AuthUser
             );
         } catch (Exception $e) {
             throw new CustomException(
-                'Something went wrong.',
+                $e->getMessage(),
                 'Authentication error.'
             );
         }
 
         if ($decoded->data->user !== $role) {
             throw new CustomException(
-              'You do not have permission to perform this action.',
-              'Authentication error.'
-          );
+                'You do not have permission to perform this action.',
+                'Authentication error.'
+            );
         }
-        
+        $request->attributes->add(['role' => $decoded->data->user]);
         return $next($request);
     }
 }

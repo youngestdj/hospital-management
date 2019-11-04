@@ -3,8 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Exceptions\CustomException;
 
-class AuthRoot
+class TargetUser
 {
     /**
      * Handle an incoming request.
@@ -13,8 +14,9 @@ class AuthRoot
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $target)
     {
+        $request->attributes->add(['target' => $target]);
         return $next($request);
     }
 }

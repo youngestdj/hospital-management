@@ -42,19 +42,19 @@ class AccountVerificationTest extends TestCase
     public function testRootVerification()
     {
         $key = Helpers::getVerificationKey('Root', $this->rootEmail);
-        $response = $this->graphQL('mutation { verifyRoot(key: "' . $key . '", password: "abcdef") }');
-        $this->assertEquals('Root User has been verified. You can now log in with your email and password.', $response->json('data.verifyRoot'));
+        $response = $this->graphQL('mutation { verifyUser(key: "' . $key . '", password: "abcdef", user: "Root") }');
+        $this->assertEquals('Account has been verified. You can now log in with your email and password.', $response->json('data.verifyUser'));
     }
 
     public function testRootVerificationWrongKey()
     {
-        $response = $this->graphQL('mutation { verifyRoot(key: "wrongKey", password: "abcdef") }');
-        $this->assertEquals('Invalid verification key.', $response->json('data.verifyRoot'));
+        $response = $this->graphQL('mutation { verifyUser(key: "wrongKey", password: "abcdef", user: "Root") }');
+        $this->assertEquals('Invalid verification key.', $response->json('data.verifyUser'));
     }
 
     public function testRootVerificationInvalidPassword()
     {
-        $response = $this->graphQL('mutation { verifyRoot(key: "wrongKey", password: "abcde") }');
+        $response = $this->graphQL('mutation { verifyUser(key: "wrongKey", password: "abcde", user: "Root") }');
         $this->assertEquals('The password must be at least 6 characters.', $response->json('errors.0.extensions.validation.password.0'));
     }
 }
