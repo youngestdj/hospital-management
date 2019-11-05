@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use Firebase\JWT\JWT;
+use Crisu83\ShortId\ShortId;
 
 class Helpers
 {
@@ -32,5 +33,15 @@ class Helpers
         ]
         ];
         return JWT::encode($token, \config('auth.jwt_secret'));
+    }
+
+    /**
+     * Generate verification key
+     * @return string
+     */
+    public static function generateKey()
+    {
+        $shortid = ShortId::create();
+        return $shortid->generate() . $shortid->generate();
     }
 }

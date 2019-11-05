@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Root;
-use App\Mail\AdminAdded;
-use Crisu83\ShortId\ShortId;
+use App\Mail\UserAdded;
+use App\Utils\Helpers;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Mail;
 
@@ -15,16 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $shortid = ShortId::create();
-        $verificationKey = $shortid->generate() . $shortid->generate();
+        $verificationKey = Helpers::generateKey();
         $createRoot = Root::firstOrCreate(
-        ["email" => \config('mail.root')],
-        [
+            ["email" => \config('mail.root')],
+            [
         "verification_key" => $verificationKey,
       ]
-    );
+        );
         if ($createRoot->wasRecentlyCreated) {
-            Mail::to(\config('mail.root'))->send(new AdminAdded(["user" => "root", "key" => $verificationKey]));
+            Mail::to(\config('mail.root'))->send(new UserAdded(["user" => "root", "key" => $verificationKey]));
         }
     }
 }

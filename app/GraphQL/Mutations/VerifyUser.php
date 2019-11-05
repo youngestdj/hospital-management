@@ -2,10 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
-use Illuminate\Support\Arr;
-use App\Models\Root;
-
-class VerifyRoot
+class VerifyUser
 {
     /**
      * Return a value for the field.
@@ -17,16 +14,17 @@ class VerifyRoot
      */
     public function resolve($rootValue, array $args)
     {
-        $credentials = Arr::only($args, ['key', 'password']);
-        $verificationKey = Root::where('verification_key', $credentials['key'])->first();
+        $user = $args['user'];
+        $model = 'App\\Models\\'.$user;
+        $verificationKey = $model::where('verification_key', $args['key'])->first();
         
         if (count($verificationKey) < 1) {
             return 'Invalid verification key.';
         } else {
-            $verificationKey->password = $credentials['password'];
+            $verificationKey->password = $args['password'];
             $verificationKey->verification_key = "";
             $verificationKey->save();
-            return 'Root User has been verified. You can now log in with your email and password.';
+            return 'Account has been verified. You can now log in with your email and password.';
         }
     }
 }

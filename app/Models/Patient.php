@@ -11,5 +11,5 @@ class Patient extends Model
     'expires' => null,
     'verification_key' => null
   ];
-    protected $fillable = ['email', 'lastname', 'firstname', 'dob', 'gender', 'occupation', 'address'];
+    protected $fillable = ['email', 'lastname', 'firstname', 'dob', 'gender', 'occupation', 'address', 'phone'];
 }

@@ -25,3 +25,5 @@ analysis.txt
 build
 cghooks.lock
 coverage
+.editorconfig
+.gitattributes

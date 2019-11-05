@@ -30,13 +30,13 @@ class AuthTest extends TestCase
 
         // verify root user
         $key = Helpers::getVerificationKey('Root', $this->rootEmail);
-        $this->graphQL('mutation { verifyRoot(key: "' . $key . '", password: "abcdef") }');
+        $this->graphQL('mutation { verifyUser(key: "' . $key . '", password: "abcdef", user: "Root") }');
     }
 
     public function testRootValidLogin()
     {
         $response = $this->graphql('mutation {
-          login(email: "'.$this->rootEmail.'", password: "'.$this->validPassword.'", user: "Admin") {
+          login(email: "'.$this->rootEmail.'", password: "'.$this->validPassword.'", user: "Root") {
             id,
             email
           }
@@ -50,7 +50,7 @@ class AuthTest extends TestCase
     public function testRootIncorrectEmail()
     {
         $response = $this->graphql('mutation {
-          login(email: "fakeEmail@test.com", password: "'.$this->validPassword.'", user: "Admin") {
+          login(email: "fakeEmail@test.com", password: "'.$this->validPassword.'", user: "Root") {
             id,
             email
           }
@@ -61,7 +61,7 @@ class AuthTest extends TestCase
     public function testRootInvalidEmail()
     {
         $response = $this->graphql('mutation {
-          login(email: "fakeEmailtest.com", password: "'.$this->validPassword.'", user: "Admin") {
+          login(email: "fakeEmailtest.com", password: "'.$this->validPassword.'", user: "Root") {
             id,
             email
           }
@@ -74,7 +74,7 @@ class AuthTest extends TestCase
     public function testRootInvalidPassword()
     {
         $response = $this->graphql('mutation {
-          login(email: "'.$this->rootEmail.'", password: "fakePassword", user: "Admin") {
+          login(email: "'.$this->rootEmail.'", password: "fakePassword", user: "Root") {
             id,
             email
           }

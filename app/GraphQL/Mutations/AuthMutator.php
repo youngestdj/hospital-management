@@ -4,7 +4,6 @@ namespace App\GraphQL\Mutations;
 
 use App\Utils\Helpers;
 use Exception;
-use Illuminate\Support\Arr;
 use App\Exceptions\CustomException;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,11 +19,17 @@ class AuthMutator
      */
     public function login($rootValue, array $args)
     {
-        $credentials = Arr::only($args, ['email', 'password', 'user']);
-        $model = 'App\\Models\\'.$credentials['user'];
+        if (($args['user'] === 'Root') && ($args['email'] !== \config('mail.root'))) {
+            throw new CustomException(
+                'Invalid email or password.',
+                'Login failed.'
+            );
+        }
+
+        $model = 'App\\Models\\'.$args['user'];
         try {
-            $verifyUser = $model::where('email', strtolower($credentials['email']))->first();
-            $verifyPassword = Hash::check($credentials['password'], $verifyUser['password']);
+            $verifyUser = $model::where('email', strtolower($args['email']))->first();
+            $verifyPassword = Hash::check($args['password'], $verifyUser['password']);
 
             if (!$verifyPassword) {
                 throw new CustomException(
@@ -33,7 +38,7 @@ class AuthMutator
                 );
             }
 
-            $verifyUser->token = Helpers::signToken($verifyUser['id'], $credentials['user']);
+            $verifyUser->token = Helpers::signToken($verifyUser['id'], $args['user']);
             return $verifyUser->only('id', 'email', 'firstname', 'lastname', 'token');
         } catch (Exception $e) {
             throw new CustomException(
