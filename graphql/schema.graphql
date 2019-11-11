@@ -41,11 +41,27 @@ type Patient {
   gender: String!
   occupation: String!
   address: String!
+  nationality: String!
+  marital_status: String!
+  religion: String!
+  ethnicity: String!
 }
 
 type Query {
-  admin(id: Int! @eq): Admin @find
-  admins: [Admin!]! @all
+  admin(id: Int @eq, email: String @eq): Admin
+    @find
+    @middleware(checks: ["authUser:Root"])
+  admins: [Admin!]! @middleware(checks: ["authUser:Root"]) @paginate
+
+  patient(id: Int @eq, email: String @eq): Patient
+    @find
+    @middleware(checks: ["authUser:Root,Admin,Doctor"])
+  patients: [Patient!]! @paginate @middleware(checks: ["authUser:Root"])
+  
+  doctor(id: Int @eq, email: String @eq): Doctor
+    @find
+    @middleware(checks: ["authUser:Root,Admin,Doctor"])
+  doctors: [Doctor!]! @paginate @middleware(checks: ["authUser:Root"])
 }
 
 type Mutation {
@@ -67,7 +83,7 @@ type Mutation {
     email: String! @rules(apply: ["required", "email", "unique:admins"])
   ): Admin
     @middleware(checks: ["authUser:Root", "targetUser:Admin"])
-    @field(resolver: "AddUser@resolve")
+    @field(resolver: "UserMutator@addUser")
 
   addDoctor(
     firstname: String! @rules(apply: ["required", "alpha"])
@@ -80,19 +96,25 @@ type Mutation {
     email: String! @rules(apply: ["required", "email", "unique:doctors"])
   ): Doctor
     @middleware(checks: ["authUser:Admin", "targetUser:Doctor"])
-    @field(resolver: "AddUser@resolve")
+    @field(resolver: "UserMutator@addUser")
 
   addPatient(
     firstname: String! @rules(apply: ["required", "alpha"])
     lastname: String! @rules(apply: ["required", "alpha"])
-    email: String @rules(apply: ["nullable", "sometimes", "email", "unique:patients"])
+    email: String
+      @rules(apply: ["nullable", "sometimes", "email", "unique:patients"])
     phone: String! @rules(apply: ["required", "min:10", "unique:patients"])
     dob: String!
       @rules(apply: ["required", "date_format:d-m-Y", "before:today"])
     gender: String! @rules(apply: ["required", "in:male,female,other"])
     occupation: String! @rules(apply: ["required", "string"])
     address: String! @rules(apply: ["required"])
+    nationality: String! @rules(apply: ["required", "alpha"])
+    marital_status: String!
+      @rules(apply: ["required", "in:single, married, divorced, widowed"])
+    religion: String! @rules(apply: ["required", "alpha"])
+    ethnicity: String! @rules(apply: ["required", "alpha"])
   ): Patient
     @middleware(checks: ["authUser:Admin", "targetUser:Patient"])
-    @field(resolver: "AddUser@resolve")
+    @field(resolver: "UserMutator@addUser")
 }

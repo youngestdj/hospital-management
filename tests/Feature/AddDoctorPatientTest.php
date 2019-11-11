@@ -77,7 +77,7 @@ class AddDoctorPatientTest extends TestCase
             phone: "1234",
             gender: "invalid",
             dob: "31413",
-            specialization: "2343"
+            specialization: "93rcj"            
           ) {
             id,
             email,
@@ -86,7 +86,7 @@ class AddDoctorPatientTest extends TestCase
             phone,
             gender,
             dob,
-            specialization  
+            specialization
           }
       }');
 
@@ -236,7 +236,11 @@ class AddDoctorPatientTest extends TestCase
             gender: "invalid",
             dob: "31413",
             occupation: "2343",
-            address: "no 1 test str"
+            address: "no 1 test str",
+            nationality: "2343",
+            marital_status: "invalid",
+            religion: "23432",
+            ethnicity: "83r92"
           ) {
             id,
             email,
@@ -245,9 +249,14 @@ class AddDoctorPatientTest extends TestCase
             phone,
             gender,
             dob,
-            occupation
+            occupation,
+            nationality,
+            marital_status,
+            religion,
+            ethnicity
           }
       }');
+
 
         $this->assertEquals('Validation failed for the field [addPatient].', $response->json('errors.0.message'));
         $this->assertEquals('The email must be a valid email address.', $response->json('errors.0.extensions.validation.email.0'));
@@ -257,6 +266,10 @@ class AddDoctorPatientTest extends TestCase
         $this->assertEquals('The selected gender is invalid.', $response->json('errors.0.extensions.validation.gender.0'));
         $this->assertEquals('The dob does not match the format d-m-Y.', $response->json('errors.0.extensions.validation.dob.0'));
         $this->assertEquals('The dob must be a date before today.', $response->json('errors.0.extensions.validation.dob.1'));
+        $this->assertEquals('The nationality may only contain letters.', $response->json('errors.0.extensions.validation.nationality.0'));
+        $this->assertEquals('The selected marital status is invalid.', $response->json('errors.0.extensions.validation.marital_status.0'));
+        $this->assertEquals('The religion may only contain letters.', $response->json('errors.0.extensions.validation.religion.0'));
+        $this->assertEquals('The ethnicity may only contain letters.', $response->json('errors.0.extensions.validation.ethnicity.0'));
     }
 
     public function testAddPatientValidData()
@@ -275,7 +288,11 @@ class AddDoctorPatientTest extends TestCase
             gender: "male",
             dob: "04-05-1999",
             occupation: "Sotware engineer",
-            address: "no 1 test str"
+            address: "no 1 test str",
+            nationality: "Nigerian",
+            marital_status: "single",
+            religion: "Christianity",
+            ethnicity: "Yoruba"
           ) {
             id,
             email,
@@ -284,10 +301,16 @@ class AddDoctorPatientTest extends TestCase
             phone,
             gender,
             dob,
-            occupation
+            occupation,
+            address,
+            nationality,
+            marital_status,
+            religion,
+            ethnicity
           }
       }');
 
+    
         $this->assertEquals(1, $response->json("data.addPatient.id"));
         $this->assertEquals("patient@gmail.com", $response->json("data.addPatient.email"));
         $this->assertEquals("Test", $response->json("data.addPatient.firstname"));
@@ -296,6 +319,11 @@ class AddDoctorPatientTest extends TestCase
         $this->assertEquals("04-05-1999", $response->json("data.addPatient.dob"));
         $this->assertEquals("Sotware engineer", $response->json("data.addPatient.occupation"));
         $this->assertEquals("Patient", $response->json("data.addPatient.lastname"));
+        $this->assertEquals("no 1 test str", $response->json("data.addPatient.address"));
+        $this->assertEquals("Nigerian", $response->json("data.addPatient.nationality"));
+        $this->assertEquals("single", $response->json("data.addPatient.marital_status"));
+        $this->assertEquals("Christianity", $response->json("data.addPatient.religion"));
+        $this->assertEquals("Yoruba", $response->json("data.addPatient.ethnicity"));
 
         // test for duplicate email and phone
         $response = $this->graphql('mutation {
@@ -307,7 +335,11 @@ class AddDoctorPatientTest extends TestCase
             gender: "male",
             dob: "04-05-1999",
             occupation: "Sotware engineer",
-            address: "no 1 test str"
+            address: "no 1 test str",
+            nationality: "Nigerian",
+            marital_status: "single",
+            religion: "Christianity",
+            ethnicity: "Yoruba"
           ) {
             id,
             email,
@@ -335,7 +367,11 @@ class AddDoctorPatientTest extends TestCase
             gender: "male",
             dob: "04-05-1999",
             occupation: "Sotware engineer",
-            address: "no 1 test str"
+            address: "no 1 test str",
+            nationality: "Nigerian",
+            marital_status: "single",
+            religion: "Christianity",
+            ethnicity: "Yoruba"
           ) {
             id,
             email,
@@ -367,7 +403,11 @@ class AddDoctorPatientTest extends TestCase
             gender: "male",
             dob: "04-05-1999",
             occupation: "Sotware engineer",
-            address: "no 1 test str"
+            address: "no 1 test str",
+            nationality: "Nigerian",
+            marital_status: "single",
+            religion: "Christianity",
+            ethnicity: "Yoruba"
           ) {
             id,
             email,
