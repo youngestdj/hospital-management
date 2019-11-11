@@ -25,20 +25,6 @@ class AccountVerificationTest extends TestCase
         $this->assertTrue($savedRoot);
     }
 
-    public function testRootExists()
-    {
-        $response = $this->graphql("{
-          admin(id: 1) {
-            id
-            email
-          }
-        }
-        ");
-
-        $this->assertEquals(1, $response->json("data.admin.id"));
-        $this->assertEquals($this->rootEmail, $response->json("data.admin.email"));
-    }
-
     public function testRootVerification()
     {
         $key = Helpers::getVerificationKey('Root', $this->rootEmail);

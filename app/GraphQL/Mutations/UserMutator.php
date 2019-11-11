@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\Mail;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
-class AddUser
+class UserMutator
 {
 
     /**
@@ -20,7 +20,7 @@ class AddUser
          * @return mixed
          * @phan-file-suppress PhanUnusedPublicNoOverrideMethodParameter, PhanUnusedVariableCaughtException
          */
-    public function resolve($rootValue, array $args, GraphQLContext $context)
+    public function addUser($rootValue, array $args, GraphQLContext $context)
     {
         try {
             $target = $context->request()->get('target');

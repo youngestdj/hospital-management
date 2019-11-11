@@ -26,6 +26,10 @@ class CreatePatientsTable extends Migration
             $table->string('password')->nullable();
             $table->string('verification_key')->nullable();
             $table->string('expires')->nullable();
+            $table->string('nationality');
+            $table->string('marital_status');
+            $table->string('religion');
+            $table->string('ethnicity')->nullable();
             $table->timestamps();
         });
     }

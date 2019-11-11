@@ -17,7 +17,7 @@ class AuthUser
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, ...$roles)
     {
         if (!$token = $request->header('Authorization')) {
             throw new CustomException(
@@ -40,13 +40,15 @@ class AuthUser
             );
         }
 
-        if ($decoded->data->user !== $role) {
-            throw new CustomException(
-                'You do not have permission to perform this action.',
-                'Authentication error.'
-            );
+        foreach ($roles as $role) {
+            if ($decoded->data->user === $role) {
+                $request->attributes->add(['role' => $decoded->data->user]);
+                return $next($request);
+            }
         }
-        $request->attributes->add(['role' => $decoded->data->user]);
-        return $next($request);
+        throw new CustomException(
+            'You do not have permission to perform this action.',
+            'Authentication error.'
+        );
     }
 }
