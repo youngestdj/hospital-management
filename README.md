@@ -1,19 +1,19 @@
-# Hospital-management
+# Hospital management system
 
 [![CircleCI](https://circleci.com/gh/youngestdj/hospital-management.svg?style=svg)](https://circleci.com/gh/youngestdj/hospital-management) <a href="https://codeclimate.com/github/youngestdj/hospital-management/maintainability"><img src="https://api.codeclimate.com/v1/badges/403ae2a5b53072caa8a7/maintainability" /></a> <a href="https://codeclimate.com/github/youngestdj/hospital-management/test_coverage"><img src="https://api.codeclimate.com/v1/badges/403ae2a5b53072caa8a7/test_coverage" /></a>
 
-## Hospital management system
+##
 
-### Setup
+#### Setup
 
 - Install dependencies by running `composer install`
 - Run tests by running `composer run test`
 
-### Seed database
+#### Seed database
 
 - Run `php artisan db:seed` to create a root user. A link will be sent to the root user's email specified in the `.env` file
 
-### Static analysis
+#### Static analysis
 
 - Run `pecl install ast` to install the ast extension. Windows (http://windows.php.net/downloads/pecl/releases/ast/) https://github.com/nikic/php-ast
 - Add `extension=ast.so` to php.ini on unix systems and `extension=php_ast.dll` to php.ini on windows systems

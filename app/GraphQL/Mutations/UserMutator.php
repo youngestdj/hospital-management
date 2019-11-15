@@ -35,7 +35,7 @@ class UserMutator
             }
             return collect($user)->except(['password', 'created_at', 'updated_at', 'reset_key', 'reset_expires']);
         } catch (Exception $e) {
-            throw new CustomException($e->getMessage(), 'Something went wrong.');
+            throw new CustomException('Could not add user.', 'Something went wrong.');
         }
     }
 }

@@ -45,6 +45,22 @@ type Patient {
   marital_status: String!
   religion: String!
   ethnicity: String!
+  history: [History!]! @hasMany
+}
+
+type History {
+  id: Int! # history id
+  patient_id: Int!
+  doctor_id: Int!
+  presenting_complaint: String!
+  presenting_complaint_history: String!
+  differential_diagnosis: String!
+  diagnosis: String!
+  prescription: String!
+  surgical_history: String!
+  social_history: String!
+  patient: Patient @belongsTo
+  doctor: Doctor @hasOne
 }
 
 type Query {
@@ -57,7 +73,7 @@ type Query {
     @find
     @middleware(checks: ["authUser:Root,Admin,Doctor"])
   patients: [Patient!]! @paginate @middleware(checks: ["authUser:Root"])
-  
+
   doctor(id: Int @eq, email: String @eq): Doctor
     @find
     @middleware(checks: ["authUser:Root,Admin,Doctor"])
@@ -117,4 +133,17 @@ type Mutation {
   ): Patient
     @middleware(checks: ["authUser:Admin", "targetUser:Patient"])
     @field(resolver: "UserMutator@addUser")
+
+  addHistory(
+    patient_id: Int! @rules(apply: ["required", "exists:patients,id", "numeric"])
+    presenting_complaint: String! @rules(apply: ["required", "string"])
+    presenting_complaint_history: String! @rules(apply: ["required", "string"])
+    differential_diagnosis: String! @rules(apply: ["required", "string"])
+    diagnosis: String! @rules(apply: ["required", "string"])
+    prescription: String! @rules(apply: ["required", "string"])
+    surgical_history: String! @rules(apply: ["required", "string"])
+    social_history: String @rules(apply: ["required", "string"])
+  ): History
+    @middleware(checks: ["authUser:Doctor"])
+    @field(resolver: "HistoryMutator@addHistory")
 }
