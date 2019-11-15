@@ -43,6 +43,7 @@ class AuthUser
         foreach ($roles as $role) {
             if ($decoded->data->user === $role) {
                 $request->attributes->add(['role' => $decoded->data->user]);
+                $request->attributes->add(['userId' => $decoded->data->userId]);
                 return $next($request);
             }
         }

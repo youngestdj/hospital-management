@@ -6,19 +6,22 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UserAdded extends Mailable
+class HistoryAdded extends Mailable
 {
     use Queueable, SerializesModels;
-    public $userDetails;
+
+    public $user;
+    public $history;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($userDetails)
+    public function __construct($history, $user)
     {
-        $this->userDetails = $userDetails;
+        $this->history = $history;
+        $this->user = $user;
     }
 
     /**
@@ -28,6 +31,6 @@ class UserAdded extends Mailable
      */
     public function build()
     {
-        return $this->subject("Sample hospital - Setup your account")->view('userAdded');
+        return $this->subject("Sample hospital - Your doctor's prescription")->view('historyAdded');
     }
 }

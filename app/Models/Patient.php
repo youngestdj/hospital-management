@@ -26,4 +26,9 @@ class Patient extends Model
       'religion',
       'ethnicity'
     ];
+
+    public function history()
+    {
+        return $this->hasMany('App\Models\History');
+    }
 }
