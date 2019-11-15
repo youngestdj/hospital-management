@@ -49,7 +49,7 @@ type Patient {
 }
 
 type History {
-  id: Int! # history id
+  id: Int!
   patient_id: Int!
   doctor_id: Int!
   presenting_complaint: String!
@@ -64,35 +64,86 @@ type History {
 }
 
 type Query {
+  """
+  **Get an admin by id or email**
+  **Headers**
+  Authorization: Root token
+  """
   admin(id: Int @eq, email: String @eq): Admin
     @find
     @middleware(checks: ["authUser:Root"])
+
+  """
+  **Get admins**
+  **Headers**
+  Authorization: Root token
+  """
   admins: [Admin!]! @middleware(checks: ["authUser:Root"]) @paginate
 
+  """
+  **Get a patient by id or email**
+  **Headers**
+  Authorization: Root, Admin or Doctor token
+  """
   patient(id: Int @eq, email: String @eq): Patient
     @find
     @middleware(checks: ["authUser:Root,Admin,Doctor"])
+
+  """
+  **Get patients**
+  **Headers**
+  Authorization: Root token
+  """
   patients: [Patient!]! @paginate @middleware(checks: ["authUser:Root"])
 
+  """
+  **Get a doctor by id or email**
+  **Headers**
+  Authorization: Root, Admin, Doctor token
+  """
   doctor(id: Int @eq, email: String @eq): Doctor
     @find
     @middleware(checks: ["authUser:Root,Admin,Doctor"])
+
+  """
+  **Get doctors**
+  **Headers**
+  Authorization: Root token
+  """
   doctors: [Doctor!]! @paginate @middleware(checks: ["authUser:Root"])
 }
 
 type Mutation {
+  """
+  **key:** verificationKey sent to the email.
+  **password:** Password for root user. Must be six characters or more
+  **user:** `Root`, `Admin`, `Doctor`, `Patient`
+  """
   verifyUser(
     key: String! @rules(apply: ["required"])
     password: String! @rules(apply: ["required", "min:6"]) @bcrypt
     user: String! @rules(apply: ["required", "in:Root,Admin,Patient,Doctor"])
   ): String @field(resolver: "VerifyUser@resolve")
 
+  """
+  **email:** User email
+  **password:** User password
+  **user:** `Root`, `Admin`, `Patient`, `Doctor`
+  """
   login(
     email: String! @rules(apply: ["required", "email"])
     password: String! @rules(apply: ["required"])
     user: String! @rules(apply: ["required", "in:Root,Admin,Patient,Doctor"])
   ): User @field(resolver: "AuthMutator@login")
 
+  """
+  **email:** Admin email
+  **firstname:** Firstname
+  **lastname:** Lastname
+
+  **Headers**
+  - Authorization: Root token
+  """
   addAdmin(
     firstname: String! @rules(apply: ["required", "alpha"])
     lastname: String! @rules(apply: ["required", "alpha"])
@@ -101,6 +152,18 @@ type Mutation {
     @middleware(checks: ["authUser:Root", "targetUser:Admin"])
     @field(resolver: "UserMutator@addUser")
 
+  """
+  **email:** Doctor's email
+  **firstname:** Firstname
+  **lastname:** Lastname
+  **phone:** Phone number
+  **gender:** `male`, `female`, `other`
+  **dob:** Date of birth (dd-mm-yyyy)
+  **specialization:** Specialization
+
+  **Headers**
+  - Authorization: Root token
+  """
   addDoctor(
     firstname: String! @rules(apply: ["required", "alpha"])
     lastname: String! @rules(apply: ["required", "alpha"])
@@ -113,7 +176,23 @@ type Mutation {
   ): Doctor
     @middleware(checks: ["authUser:Admin", "targetUser:Doctor"])
     @field(resolver: "UserMutator@addUser")
+  """
+  **email:** Patient email *(optional)*
+  **firstname:** Firstname
+  **lastname:** Lastname
+  **phone:** Phone number
+  **gender:** `male`, `female`, `other`
+  **dob:** Patient's date of birth. *dd-mm-yyyy*
+  **occupation:** Occupation
+  **address:** Address
+  **nationality:** Nationality
+  **marital_status:** Marital status. `single`, `married`, `divorced` or `widowed`
+  **religion:** Religion
+  **ethnicity:** Ethnicity
 
+  **Headers**  
+  - Authorization: Root token
+  """
   addPatient(
     firstname: String! @rules(apply: ["required", "alpha"])
     lastname: String! @rules(apply: ["required", "alpha"])
@@ -134,8 +213,22 @@ type Mutation {
     @middleware(checks: ["authUser:Admin", "targetUser:Patient"])
     @field(resolver: "UserMutator@addUser")
 
+  """
+  **patient_id:** Patient id
+  **presenting_complaint:** Presenting complaint
+  **presenting_complaint_history:** Presenting complaint history
+  **differential_diagnosis:** Differential diagnosis
+  **diagnosis:** Diagnosis
+  **prescription:** Prescription
+  **surgical_history:** Surgical history
+  **social_history:** Social history
+
+  **Headers**  
+  - Authorization: Root token
+  """
   addHistory(
-    patient_id: Int! @rules(apply: ["required", "exists:patients,id", "numeric"])
+    patient_id: Int!
+      @rules(apply: ["required", "exists:patients,id", "numeric"])
     presenting_complaint: String! @rules(apply: ["required", "string"])
     presenting_complaint_history: String! @rules(apply: ["required", "string"])
     differential_diagnosis: String! @rules(apply: ["required", "string"])
