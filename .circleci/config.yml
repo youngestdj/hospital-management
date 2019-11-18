@@ -38,7 +38,7 @@ jobs:
       
       - run:
           name: Run tests
-          command: ./vendor/bin/phpunit
+          command: ./vendor/bin/phpunit --debug --testdox
 
       - run:
           name: Report code coverage

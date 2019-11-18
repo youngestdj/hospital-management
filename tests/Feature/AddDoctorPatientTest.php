@@ -240,7 +240,7 @@ class AddDoctorPatientTest extends TestCase
             nationality: "2343",
             marital_status: "invalid",
             religion: "23432",
-            ethnicity: "83r92"
+            ethnicity: "83r92",
           ) {
             id,
             email,
@@ -292,7 +292,8 @@ class AddDoctorPatientTest extends TestCase
             nationality: "Nigerian",
             marital_status: "single",
             religion: "Christianity",
-            ethnicity: "Yoruba"
+            ethnicity: "Yoruba",
+            informant: "Informant name"
           ) {
             id,
             email,
@@ -306,7 +307,8 @@ class AddDoctorPatientTest extends TestCase
             nationality,
             marital_status,
             religion,
-            ethnicity
+            ethnicity,
+            informant
           }
       }');
 
@@ -324,6 +326,7 @@ class AddDoctorPatientTest extends TestCase
         $this->assertEquals("single", $response->json("data.addPatient.marital_status"));
         $this->assertEquals("Christianity", $response->json("data.addPatient.religion"));
         $this->assertEquals("Yoruba", $response->json("data.addPatient.ethnicity"));
+        $this->assertEquals("Informant name", $response->json("data.addPatient.informant"));
 
         // test for duplicate email and phone
         $response = $this->graphql('mutation {

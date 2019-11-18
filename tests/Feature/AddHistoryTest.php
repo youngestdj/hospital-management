@@ -54,6 +54,10 @@ class AddHistoryTest extends TestCase
             prescription: "Prescription"
             surgical_history: "History"
             social_history: "Social"
+            other_history: "Other history",
+            investigations: "Investigations",
+            treatment_therapy: "Treatment therapy",
+            summary: "Summary"
           ) {
             id,
             patient_id,
@@ -85,6 +89,10 @@ class AddHistoryTest extends TestCase
           prescription: ""
           surgical_history: ""
           social_history: ""
+          other_history: "",
+          investigations: "",
+          treatment_therapy: "",
+          summary: ""
         ) {
           id,
           patient_id,
@@ -95,6 +103,10 @@ class AddHistoryTest extends TestCase
           surgical_history
           social_history
           diagnosis
+          other_history
+          investigations
+          treatment_therapy
+          summary
           patient {
             firstname
             lastname
@@ -115,6 +127,10 @@ class AddHistoryTest extends TestCase
         $this->assertEquals('The prescription field is required.', $response->json('errors.0.extensions.validation.prescription.0'));
         $this->assertEquals('The surgical history field is required.', $response->json('errors.0.extensions.validation.surgical_history.0'));
         $this->assertEquals('The social history field is required.', $response->json('errors.0.extensions.validation.social_history.0'));
+        $this->assertEquals('The other history field is required.', $response->json('errors.0.extensions.validation.other_history.0'));
+        $this->assertEquals('The investigations field is required.', $response->json('errors.0.extensions.validation.investigations.0'));
+        $this->assertEquals('The treatment therapy field is required.', $response->json('errors.0.extensions.validation.treatment_therapy.0'));
+        $this->assertEquals('The summary field is required.', $response->json('errors.0.extensions.validation.summary.0'));
     }
 
     public function testAddHistoryValidData()
@@ -134,6 +150,10 @@ class AddHistoryTest extends TestCase
           prescription: "Test prescription"
           surgical_history: "Test surgical history"
           social_history: "Test social history"
+          other_history: "Other history",
+          investigations: "Investigations",
+          treatment_therapy: "Treatment therapy",
+          summary: "Summary"
         ) {
           id,
           patient_id,
@@ -172,6 +192,10 @@ class AddHistoryTest extends TestCase
           prescription: "Test prescription"
           surgical_history: "Test surgical history"
           social_history: "Test social history"
+          other_history: "Other history",
+          investigations: "Investigations",
+          treatment_therapy: "Treatment therapy",
+          summary: "Summary"
         ) {
           id,
           patient_id,
