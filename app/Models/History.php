@@ -16,7 +16,11 @@ class History extends Model
       'diagnosis',
       'prescription',
       'surgical_history',
-      'social_history'
+      'social_history',
+      'other_history',
+      'investigations',
+      'treatment_therapy',
+      'summary'
     ];
 
     /**

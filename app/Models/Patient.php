@@ -24,7 +24,8 @@ class Patient extends Model
       'nationality',
       'marital_status',
       'religion',
-      'ethnicity'
+      'ethnicity',
+      'informant'
     ];
 
     public function history()

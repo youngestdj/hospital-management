@@ -24,6 +24,10 @@ class CreateHistoryTable extends Migration
             $table->string('prescription');
             $table->string('surgical_history');
             $table->string('social_history');
+            $table->string('other_history');
+            $table->string('investigations');
+            $table->string('treatment_therapy');
+            $table->string('summary');
             $table->timestamps();
         });
     }

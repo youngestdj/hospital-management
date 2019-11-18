@@ -30,6 +30,7 @@ class CreatePatientsTable extends Migration
             $table->string('marital_status');
             $table->string('religion');
             $table->string('ethnicity')->nullable();
+            $table->string('informant')->nullable();
             $table->timestamps();
         });
     }
