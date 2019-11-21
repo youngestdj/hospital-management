@@ -64,6 +64,17 @@ type History {
   investigations: String!
   treatment_therapy: String!
   summary: String!
+  created_at: String!
+  updated_at: String!
+  patient: Patient @belongsTo
+  doctor: Doctor @hasOne
+}
+
+type Prescription @modelClass(class: "\\App\\Models\\History") {
+  id: Int!
+  prescription: String!
+  created_at: String!
+  updated_at: String!
   patient: Patient @belongsTo
   doctor: Doctor @hasOne
 }
@@ -116,6 +127,13 @@ type Query {
   Authorization: Root token
   """
   doctors: [Doctor!]! @paginate @middleware(checks: ["authUser:Root"])
+
+  """
+  **Get a patient's doctor's prescription**  
+  **Headers**
+  Authorization: Patient token
+  """
+  prescription: [Prescription!]! @paginate @middleware(checks: ["authUser:Patient"])
 }
 
 type Mutation {
