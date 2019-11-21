@@ -24,8 +24,6 @@ class AddHistoryTest extends TestCase
         // Log doctor in
         $response = $this->graphql('mutation {
         login(email: "doctor@example.com", password: "'.$password.'", user: "Doctor") {
-          id,
-          email,
           token
         }
       }');
@@ -34,8 +32,6 @@ class AddHistoryTest extends TestCase
         // Log admin in
         $response = $this->graphql('mutation {
         login(email: "testadmin@example.com", password: "'.$password.'", user: "Admin") {
-          id,
-          email,
           token
         }
       }');

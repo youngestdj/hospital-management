@@ -27,8 +27,6 @@ class GetUsersTest extends TestCase
         // Log root in
         $response = $this->graphql('mutation {
           login(email: "'.$this->rootEmail.'", password: "'.$this->validPassword.'", user: "Root") {
-            id,
-            email,
             token
           }
         }');
@@ -37,8 +35,6 @@ class GetUsersTest extends TestCase
         // Log admin in
         $response = $this->graphql('mutation {
           login(email: "testadmin@gmail.com", password: "'.$this->validPassword.'", user: "Admin") {
-            id,
-            email,
             token
           }
         }');

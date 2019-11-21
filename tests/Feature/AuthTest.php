@@ -1,11 +1,8 @@
 <?php
 
-use App\Utils\Helpers;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Crisu83\ShortId\ShortId;
-use App\Models\Root;
 
 class AuthTest extends TestCase
 {
@@ -20,17 +17,9 @@ class AuthTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        // create new root user
-        $root = new Root();
-        $this->rootEmail = $root->email = \config('mail.root');
+        $this->rootEmail =  \config('mail.root');
+        factory(App\Models\Root::class, 1)->create();
         $this->validPassword = 'abcdef';
-        $shortid = ShortId::create();
-        $root->verification_key = $shortid->generate() . $shortid->generate();
-        $root->save();
-
-        // verify root user
-        $key = Helpers::getVerificationKey('Root', $this->rootEmail);
-        $this->graphQL('mutation { verifyUser(key: "' . $key . '", password: "abcdef", user: "Root") }');
     }
 
     public function testRootValidLogin()

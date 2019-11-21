@@ -108,5 +108,4 @@ class ViewPrescriptionTest extends TestCase
         $this->assertEquals('Please log in first.', $response->json('errors.0.message'));
         $this->assertEquals('Authentication error.', $response->json('errors.0.extensions.error'));
     }
-
 }
