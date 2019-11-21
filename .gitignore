@@ -27,3 +27,4 @@ cghooks.lock
 coverage
 .editorconfig
 .gitattributes
+schema-directives.graphql

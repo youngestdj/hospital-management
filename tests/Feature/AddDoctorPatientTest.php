@@ -1,12 +1,8 @@
 <?php
 
-use App\Utils\Helpers;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\Admin;
-use App\Models\Root;
-use Crisu83\ShortId\ShortId;
 
 class AddDoctorPatientTest extends TestCase
 {
@@ -15,50 +11,32 @@ class AddDoctorPatientTest extends TestCase
 
     protected $adminToken;
     protected $rootToken;
+    protected $validRootPassword = 'abcdef';
+    protected $validPassword = 'abcdef';
+    protected $rootEmail;
 
     public function setUp(): void
     {
         parent::setUp();
-        // create new admin
-        $admin = new Admin(['firstname' => 'Test', 'lastname' => 'admin']);
-        $admin->email = 'admin@gmail.com';
-        $this->validPassword = 'abcdef';
-        $shortid = ShortId::create();
-        $admin->verification_key = $shortid->generate() . $shortid->generate();
-        $admin->save();
-
-        // verify admin
-        $key = Helpers::getVerificationKey('Admin', $admin->email);
-        $this->graphQL('mutation { verifyUser(key: "' . $key . '", password: "'.$this->validPassword.'", user: "Admin") }');
+        factory(App\Models\Admin::class, 1)->create(['email' => 'testadmin@example.com']);
+        factory(App\Models\Root::class, 1)->create();
+        $this->rootEmail =  \config('mail.root');
 
         // Log admin in
         $response = $this->graphql('mutation {
-          login(email: "'.$admin->email.'", password: "'.$this->validPassword.'", user: "Admin") {
+          login(email: "testadmin@example.com", password: "'.$this->validPassword.'", user: "Admin") {
             token
           }
         }');
         $this->adminToken = $response->json('data.login.token');
 
-        // create new root user
-        $root = new Root();
-        $this->rootEmail = $root->email = \config('mail.root');
-        $this->validRootPassword = 'abcdef';
-        $shortid = ShortId::create();
-        $root->verification_key = $shortid->generate() . $shortid->generate();
-        $root->save();
-
-        // verify root user
-        $key = Helpers::getVerificationKey('Root', $this->rootEmail);
-        $this->graphQL('mutation { verifyUser(key: "' . $key . '", password: "abcdef", user: "Root") }');
-
         // Log root in
         $response = $this->graphql('mutation {
           login(email: "'.$this->rootEmail.'", password: "'.$this->validRootPassword.'", user: "Root") {
-            id,
-            email,
             token
           }
         }');
+
         $this->rootToken = $response->json('data.login.token');
     }
 
@@ -195,7 +173,7 @@ class AddDoctorPatientTest extends TestCase
         'Content-Type' => 'Application/json',
         'Authorization' => $this->rootToken
       ]);
-      
+
         $response = $this->graphql('mutation {
         addDoctor(
           email: "doctor@gmail.com",

@@ -1,11 +1,8 @@
 <?php
 
-use App\Utils\Helpers;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\Root;
-use Crisu83\ShortId\ShortId;
 
 class AddAdminTest extends TestCase
 {
@@ -15,27 +12,17 @@ class AddAdminTest extends TestCase
     protected $rootEmail;
     protected $rootToken;
     protected $adminToken;
+    protected $validPassword = 'abcdef';
 
     public function setUp(): void
     {
         parent::setUp();
-        // create new root user
-        $root = new Root();
-        $this->rootEmail = $root->email = \config('mail.root');
-        $this->validPassword = 'abcdef';
-        $shortid = ShortId::create();
-        $root->verification_key = $shortid->generate() . $shortid->generate();
-        $root->save();
-
-        // verify root user
-        $key = Helpers::getVerificationKey('Root', $this->rootEmail);
-        $this->graphQL('mutation { verifyUser(key: "' . $key . '", password: "abcdef", user: "Root") }');
+        factory(App\Models\Root::class, 1)->create();
+        $this->rootEmail =  \config('mail.root');
 
         // Log root in
         $response = $this->graphql('mutation {
           login(email: "'.$this->rootEmail.'", password: "'.$this->validPassword.'", user: "Root") {
-            id,
-            email,
             token
           }
         }');
@@ -73,6 +60,7 @@ class AddAdminTest extends TestCase
             lastname
           }
       }');
+
 
         $this->assertEquals(2, $response->json("data.addAdmin.id"));
         $this->assertEquals("admin@gmail.com", $response->json("data.addAdmin.email"));
