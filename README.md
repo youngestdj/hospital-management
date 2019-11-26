@@ -32,6 +32,12 @@
 * Root can get all patients
 * Root, Admin ot Doctor can get a doctor by id or email
 * Root can get all doctors
+* Doctor can get a patient's medical history
+* Patients can view their prescriptions
+* Patients can book appointments
+* Patients can see their appointments
+* Admin can edit appointments
+* Doctors can see their appointments
 
 ### Docs
-Visit the `/graphql-playground` endpoint in your browser to see the documentation
+Visit the `/graphql-playground` endpoint in your browser to see the documentations

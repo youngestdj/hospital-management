@@ -12,4 +12,9 @@ class Doctor extends Model
     'verification_key' => null
   ];
     protected $fillable = ['email', 'lastname', 'phone', 'firstname', 'dob', 'gender', 'specialization'];
+
+    public function appointments()
+    {
+        return $this->hasMany('App\Models\Appointment');
+    }
 }

@@ -29,6 +29,7 @@ type Doctor {
   gender: String!
   dob: String!
   specialization: String!
+  appointments: [Appointment!]! @hasMany
 }
 
 type Patient {
@@ -47,6 +48,7 @@ type Patient {
   ethnicity: String!
   informant: String!
   history: [History!]! @hasMany
+  appointments: [Appointment!]! @hasMany
 }
 
 type History {
@@ -77,6 +79,16 @@ type Prescription @modelClass(class: "\\App\\Models\\History") {
   updated_at: String!
   patient: Patient @belongsTo
   doctor: Doctor @hasOne
+}
+
+type Appointment {
+  id: Int!
+  patient_id: Int!
+  doctor_id: Int!
+  date: String!
+  description: String!
+  patient: Patient @belongsTo
+  doctor: Doctor @belongsTo
 }
 
 type Query {
@@ -129,11 +141,13 @@ type Query {
   doctors: [Doctor!]! @paginate @middleware(checks: ["authUser:Root"])
 
   """
-  **Get a patient's doctor's prescription**  
+  **Get a patient's doctor's prescription**
   **Headers**
   Authorization: Patient token
   """
-  prescription: [Prescription!]! @paginate @middleware(checks: ["authUser:Patient"])
+  prescription: [Prescription!]!
+    @paginate
+    @middleware(checks: ["authUser:Patient"])
 }
 
 type Mutation {
@@ -146,7 +160,7 @@ type Mutation {
     key: String! @rules(apply: ["required"])
     password: String! @rules(apply: ["required", "min:6"]) @bcrypt
     user: String! @rules(apply: ["required", "in:Root,Admin,Patient,Doctor"])
-  ): String @field(resolver: "VerifyUser@resolve")
+  ): String @field(resolver: "UserMutator@verifyUser")
 
   """
   **email:** User email
@@ -268,4 +282,54 @@ type Mutation {
   ): History
     @middleware(checks: ["authUser:Doctor"])
     @field(resolver: "HistoryMutator@addHistory")
+
+  """
+  **date:** Appointment date _dd-mm-yyy hr:min am/pm_
+  **description:** Appointment description
+
+  **Headers**
+  - Authorization: Patient token
+  """
+  bookAppointment(
+    date: String!
+      @rules(
+        apply: ["required", "date_format:d-m-Y h:i a", "after_or_equal:today"]
+        messages: {
+          date_format: "Date must be in the format dd-mm-yyyy hr:min am,pm"
+        }
+      )
+    description: String! @rules(apply: ["required", "string"])
+  ): Appointment
+    @middleware(checks: ["authUser:Patient"])
+    @field(resolver: "AppointmentMutator@bookAppointment")
+
+  """
+  **id:** Appointment id
+  **doctor_id:** Doctor id
+  **date:** Appointment date _dd-mm-yyy hr:min am/pm_
+
+  **Headers**
+  - Authorization: Admin token
+  """
+  editAppointment(
+    id: Int!
+      @rules(
+        apply: ["required", "exists:appointments,id", "numeric"]
+        messages: { exists: "Appointment does not exist." }
+      )
+    doctor_id: Int!
+      @rules(
+        apply: ["required", "exists:doctors,id", "numeric"]
+        messages: { exists: "Doctor does not exist." }
+      )
+    date: String
+      @rules(
+        apply: ["sometimes","required","date_format:d-m-Y h:i a", "after_or_equal:today"]
+        messages: {
+          date_format: "Date must be in the format dd-mm-yyyy hr:min am,pm"
+        }
+      )
+  ): Appointment
+    @middleware(checks: ["authUser:Admin"])
+    @field(resolver: "AppointmentMutator@editAppointment")
 }
