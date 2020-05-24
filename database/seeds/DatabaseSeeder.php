@@ -19,11 +19,11 @@ class DatabaseSeeder extends Seeder
         $createRoot = Root::firstOrCreate(
             ["email" => \config('mail.root')],
             [
-        "verification_key" => $verificationKey,
-      ]
+                "verification_key" => $verificationKey,
+            ]
         );
         if ($createRoot->wasRecentlyCreated) {
-            Mail::to(\config('mail.root'))->send(new UserAdded(["user" => "root", "key" => $verificationKey]));
+            Mail::to(\config('mail.root'))->send(new UserAdded(["user" => "root", "key" => $verificationKey, "firstname" => "Root", "lastname" => "User"]));
         }
     }
 }
