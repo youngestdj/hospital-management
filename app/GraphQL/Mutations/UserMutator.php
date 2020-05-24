@@ -61,7 +61,7 @@ class UserMutator
             $model = 'App\\Models\\'.$user;
             $verificationKey = $model::where('verification_key', $args['key'])->first();
         
-            if (count($verificationKey) < 1) {
+            if (count((array)$verificationKey) < 1) {
                 return 'Invalid verification key.';
             } else {
                 $verificationKey->password = $args['password'];

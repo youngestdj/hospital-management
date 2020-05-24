@@ -111,7 +111,7 @@ class GetUsersTest extends TestCase
       }
       ');
 
-        $this->assertEquals(10, count($response->json("data.admins.data")));
+        $this->assertEquals(10, count((array)$response->json("data.admins.data")));
         $this->assertEquals(12, $response->json("data.admins.paginatorInfo.total"));
     }
 
@@ -317,7 +317,7 @@ class GetUsersTest extends TestCase
         }
       }
       ');
-        $this->assertEquals(10, count($response->json("data.doctors.data")));
+        $this->assertEquals(10, count($response->json("data.doctors.data") ?? []));
         $this->assertEquals(11, $response->json("data.doctors.paginatorInfo.total"));
     }
 
