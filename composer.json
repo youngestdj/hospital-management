@@ -77,6 +77,6 @@
             "@php artisan key:generate --ansi"
         ],
         "test": "./vendor/bin/phpunit --debug --testdox",
-        "post-install-cmd": "vendor/bin/cghooks add --ignore-lock"
+        "post-install-cmd": "./vendor/bin/cghooks add --ignore-lock"
     }
 }
