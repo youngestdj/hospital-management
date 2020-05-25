@@ -244,7 +244,7 @@ type Mutation {
     address: String! @rules(apply: ["required"])
     nationality: String! @rules(apply: ["required", "alpha"])
     marital_status: String!
-      @rules(apply: ["required", "in:single, married, divorced, widowed"])
+      @rules(apply: ["required", "in:single,married,divorced,widowed"])
     religion: String! @rules(apply: ["required", "alpha"])
     informant: String @rules(apply: ["nullable", "sometimes", "string"])
     ethnicity: String! @rules(apply: ["required", "alpha"])
@@ -324,7 +324,12 @@ type Mutation {
       )
     date: String
       @rules(
-        apply: ["sometimes","required","date_format:d-m-Y h:i a", "after_or_equal:today"]
+        apply: [
+          "sometimes"
+          "required"
+          "date_format:d-m-Y h:i a"
+          "after_or_equal:today"
+        ]
         messages: {
           date_format: "Date must be in the format dd-mm-yyyy hr:min am,pm"
         }
