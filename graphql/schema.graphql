@@ -92,6 +92,7 @@ type Appointment {
 }
 
 type Query {
+  test: [Admin!]! @all
   """
   **Get an admin by id or email**
   **Headers**
